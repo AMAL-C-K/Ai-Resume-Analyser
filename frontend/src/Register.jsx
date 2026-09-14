@@ -44,7 +44,7 @@ function Register() {
 
             // Register user
             const registerResponse = await fetch(
-                "http://127.0.0.1:8000/api/register/",
+                "https://ai-resume-analyser-api-8k49.onrender.com//api/register/",
                 {
                     method: "POST",
                     headers: {
