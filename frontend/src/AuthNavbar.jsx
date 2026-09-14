@@ -6,7 +6,6 @@ function AuthNavbar() {
 
     return (
         <nav className="navbar">
-
             <div
                 className="navbar-logo"
                 onClick={() => navigate("/login")}
@@ -15,7 +14,6 @@ function AuthNavbar() {
             </div>
 
             <div className="navbar-right">
-
                 <button
                     className="nav-link"
                     onClick={() => navigate("/login")}
@@ -30,11 +28,20 @@ function AuthNavbar() {
                     Register
                 </button>
 
+                <button
+                    className="nav-link"
+                    onClick={() =>
+                        window.open(
+                            "https://ai-resume-analyser-api-8k49.onrender.com/admin/",
+                            "_blank"
+                        )
+                    }
+                >
+                    Admin
+                </button>
             </div>
-
         </nav>
     );
 }
 
 export default AuthNavbar;
-
