@@ -90,7 +90,7 @@ function Register() {
 
             // Automatically login after registration
             const loginResponse = await fetch(
-                "http://127.0.0.1:8000/api/login/",
+                "https://ai-resume-analyser-api-8k49.onrender.com/api/login/",
                 {
                     method: "POST",
                     headers: {
