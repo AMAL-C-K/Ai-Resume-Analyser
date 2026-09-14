@@ -44,7 +44,7 @@ function Register() {
 
             // Register user
             const registerResponse = await fetch(
-                "https://ai-resume-analyser-api-8k49.onrender.com//api/register/",
+                "https://ai-resume-analyser-api-8k49.onrender.com/api/register/",
                 {
                     method: "POST",
                     headers: {
