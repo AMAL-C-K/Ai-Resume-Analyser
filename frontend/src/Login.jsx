@@ -25,7 +25,7 @@ function Login() {
 
         try {
             const response = await fetch(
-                "https://ai-resume-analyser-80vh.onrender.com/api/login/",
+                "https://ai-resume-analyser-api-8k49.onrender.com/api/login/",
                 {
                     method: "POST",
 
