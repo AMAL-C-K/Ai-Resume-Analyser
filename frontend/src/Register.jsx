@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import AuthNavbar from "./AuthNavbar";
 
 function Register() {
     const navigate = useNavigate();
@@ -156,6 +157,8 @@ function Register() {
     }
 
     return (
+        <>
+             <AuthNavbar />
         <div className="auth-page">
 
             <div className="auth-card">
@@ -264,6 +267,8 @@ function Register() {
             </div>
 
         </div>
+
+        </>
     );
 }
 
