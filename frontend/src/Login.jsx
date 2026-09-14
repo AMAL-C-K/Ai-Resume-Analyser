@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 function Login() {
@@ -40,7 +40,6 @@ function Login() {
                 }
             );
 
-            // Read response as text first
             const text = await response.text();
 
             console.log("Login status:", response.status);
@@ -64,18 +63,30 @@ function Login() {
                 );
             }
 
-            // Save JWT tokens
-            localStorage.setItem("access", data.access);
-            localStorage.setItem("refresh", data.refresh);
-            localStorage.setItem("username", username.trim());
+            localStorage.setItem(
+                "access",
+                data.access
+            );
 
-            // Go to dashboard
+            localStorage.setItem(
+                "refresh",
+                data.refresh
+            );
+
+            localStorage.setItem(
+                "username",
+                username.trim()
+            );
+
             navigate("/dashboard");
 
         } catch (error) {
             console.error("Login error:", error);
 
-            setError(error.message);
+            setError(
+                error.message ||
+                "Something went wrong."
+            );
 
         } finally {
             setLoading(false);
@@ -84,66 +95,91 @@ function Login() {
 
     return (
         <div className="auth-page">
-    <div className="auth-card">
 
-        <div className="auth-brand">
-            <span>Resume</span>AI
+            <div className="auth-card">
+
+                <div className="auth-header">
+
+                    <h1>Welcome Back</h1>
+
+                    <p>
+                        Login to analyze your resumes with AI.
+                    </p>
+
+                </div>
+
+                {error && (
+                    <div className="auth-error">
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleLogin}>
+
+                    <div className="form-group">
+                        <label>
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) =>
+                                setUsername(e.target.value)
+                            }
+                            placeholder="Enter your username"
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) =>
+                                setPassword(e.target.value)
+                            }
+                            placeholder="Enter your password"
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="auth-button"
+                        disabled={loading}
+                    >
+                        {loading
+                            ? "Logging in..."
+                            : "Login"}
+                    </button>
+
+                </form>
+
+                <div className="auth-footer">
+
+                    <span>
+                        Don't have an account?
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() =>
+                            navigate("/register")
+                        }
+                    >
+                        Create one
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
-
-        <h1>Welcome back</h1>
-
-        <p className="auth-subtitle">
-            Login to analyze your resumes with AI.
-        </p>
-
-        {/* your existing error message */}
-
-        <form onSubmit={handleLogin}>
-
-            <div className="form-group">
-                <label>Username</label>
-
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Enter your username"
-                    required
-                />
-            </div>
-
-            <div className="form-group">
-                <label>Password</label>
-
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    required
-                />
-            </div>
-
-            <button
-                type="submit"
-                className="auth-btn"
-                disabled={loading}
-            >
-                {loading ? "Logging in..." : "Login"}
-            </button>
-
-        </form>
-
-        <p className="auth-footer">
-            Don't have an account?{" "}
-            <span onClick={() => navigate("/register")}>
-                Create one
-            </span>
-        </p>
-
-    </div>
-</div>
-            
     );
 }
 
