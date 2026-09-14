@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import AuthNavbar from "./AuthNavbar";
 
 function Login() {
     const navigate = useNavigate();
@@ -94,6 +95,8 @@ function Login() {
     }
 
     return (
+        <>
+             <AuthNavbar />
         <div className="auth-page">
 
             <div className="auth-card">
@@ -180,6 +183,7 @@ function Login() {
             </div>
 
         </div>
+        </>     
     );
 }
 
