@@ -34,9 +34,7 @@ function Register() {
         }
 
         if (password.length < 6) {
-            setError(
-                "Password must be at least 6 characters."
-            );
+            setError("Password must be at least 6 characters.");
             return;
         }
 
@@ -59,8 +57,7 @@ function Register() {
                 }
             );
 
-            const registerText =
-                await registerResponse.text();
+            const registerText = await registerResponse.text();
 
             let registerData;
 
@@ -75,8 +72,7 @@ function Register() {
             }
 
             if (!registerResponse.ok) {
-                const firstError =
-                    Object.values(registerData)[0];
+                const firstError = Object.values(registerData)[0];
 
                 if (Array.isArray(firstError)) {
                     throw new Error(firstError[0]);
@@ -104,8 +100,7 @@ function Register() {
                 }
             );
 
-            const loginText =
-                await loginResponse.text();
+            const loginText = await loginResponse.text();
 
             let loginData;
 
@@ -158,119 +153,138 @@ function Register() {
 
     return (
         <>
-             <AuthNavbar />
-        <div className="auth-page">
+            <AuthNavbar />
 
-            <div className="auth-card">
+            <div className="auth-page">
 
-                <div className="auth-header">
-                    <h1>Create Account</h1>
+                <div className="register-layout">
 
-                    <p>
-                        Create your ResumeAI account
-                    </p>
-                </div>
+                    {/* LEFT SIDE - REGISTER FORM */}
+                    <div className="auth-card">
 
-                {error && (
-                    <div className="auth-error">
-                        {error}
+                        <div className="auth-header">
+                            <h1>Create Account</h1>
+
+                            <p>
+                                Create your ResumeAI account
+                            </p>
+                        </div>
+
+                        {error && (
+                            <div className="auth-error">
+                                {error}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleRegister}>
+
+                            <div className="form-group">
+                                <label>
+                                    Username
+                                </label>
+
+                                <input
+                                    type="text"
+                                    value={username}
+                                    onChange={(event) =>
+                                        setUsername(
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="Enter username"
+                                    disabled={loading}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>
+                                    Email
+                                </label>
+
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(event) =>
+                                        setEmail(
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="Enter email"
+                                    disabled={loading}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>
+                                    Password
+                                </label>
+
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(event) =>
+                                        setPassword(
+                                            event.target.value
+                                        )
+                                    }
+                                    placeholder="Create password"
+                                    disabled={loading}
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="auth-button"
+                                disabled={loading}
+                            >
+                                {loading
+                                    ? "Creating Account..."
+                                    : "Create Account"}
+                            </button>
+
+                        </form>
+
+                        <div className="auth-footer">
+                            <span>
+                                Already have an account?
+                            </span>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    navigate("/login")
+                                }
+                            >
+                                Login
+                            </button>
+                        </div>
+
                     </div>
-                )}
 
-                <form onSubmit={handleRegister}>
+                    {/* RIGHT SIDE - PASSWORD CONDITIONS */}
+                    <div className="password-conditions">
 
-                    <div className="form-group">
-                        <label>
-                            Username
-                        </label>
+                        <h2>Password Requirements</h2>
 
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(event) =>
-                                setUsername(
-                                    event.target.value
-                                )
-                            }
-                            placeholder="Enter username"
-                            disabled={loading}
-                        />
+                        <p>
+                            Your password should contain:
+                        </p>
+
+                        <ul>
+                            <li>At least 8 characters</li>
+                            <li>At least 1 uppercase letter</li>
+                            <li>At least 1 lowercase letter</li>
+                            <li>At least 1 number</li>
+                            <li>At least 1 special character</li>
+                        </ul>
+
                     </div>
 
-
-                    <div className="form-group">
-                        <label>
-                            Email
-                        </label>
-
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(event) =>
-                                setEmail(
-                                    event.target.value
-                                )
-                            }
-                            placeholder="Enter email"
-                            disabled={loading}
-                        />
-                    </div>
-
-
-                    <div className="form-group">
-                        <label>
-                            Password
-                        </label>
-
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(event) =>
-                                setPassword(
-                                    event.target.value
-                                )
-                            }
-                            placeholder="Create password"
-                            disabled={loading}
-                        />
-                    </div>
-
-
-                    <button
-                        type="submit"
-                        className="auth-button"
-                        disabled={loading}
-                    >
-                        {loading
-                            ? "Creating Account..."
-                            : "Create Account"}
-                    </button>
-
-                </form>
-
-
-                <div className="auth-footer">
-                    <span>
-                        Already have an account?
-                    </span>
-
-                    <button
-                        type="button"
-                        onClick={() =>
-                            navigate("/login")
-                        }
-                    >
-                        Login
-                    </button>
                 </div>
 
             </div>
-
-        </div>
-
         </>
     );
 }
 
 export default Register;
-
