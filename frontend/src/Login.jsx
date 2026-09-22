@@ -195,7 +195,7 @@ function Login() {
                         <div className="demo-item">
                             <span>
                                 <strong>Username:</strong>{" "}
-                                demo_user
+                                DEMOUSER
                             </span>
                         </div>
 
