@@ -1,290 +1,427 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Login.css";
-import AuthNavbar from "./AuthNavbar";
+/* =========================================
+   AUTH PAGE
+   ========================================= */
 
-function Register() {
-    const navigate = useNavigate();
+.auth-page {
+    min-height: 100vh;
+    width: 100%;
 
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    background: #f8fafc;
 
-    async function handleRegister(event) {
-        event.preventDefault();
+    padding: 30px 20px;
 
-        setError("");
-
-        if (!username.trim()) {
-            setError("Username is required.");
-            return;
-        }
-
-        if (!email.trim()) {
-            setError("Email is required.");
-            return;
-        }
-
-        if (!password) {
-            setError("Password is required.");
-            return;
-        }
-
-        if (password.length < 6) {
-            setError("Password must be at least 6 characters.");
-            return;
-        }
-
-        try {
-            setLoading(true);
-
-            // Register user
-            const registerResponse = await fetch(
-                "https://ai-resume-analyser-api-8k49.onrender.com/api/register/",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        username: username.trim(),
-                        email: email.trim(),
-                        password: password,
-                    }),
-                }
-            );
-
-            const registerText = await registerResponse.text();
-
-            let registerData;
-
-            try {
-                registerData = registerText
-                    ? JSON.parse(registerText)
-                    : {};
-            } catch {
-                throw new Error(
-                    "Registration API returned an invalid response."
-                );
-            }
-
-            if (!registerResponse.ok) {
-                const firstError = Object.values(registerData)[0];
-
-                if (Array.isArray(firstError)) {
-                    throw new Error(firstError[0]);
-                }
-
-                throw new Error(
-                    registerData.detail ||
-                    registerData.error ||
-                    "Registration failed."
-                );
-            }
-
-            // Automatically login after registration
-            const loginResponse = await fetch(
-                "https://ai-resume-analyser-api-8k49.onrender.com/api/login/",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        username: username.trim(),
-                        password: password,
-                    }),
-                }
-            );
-
-            const loginText = await loginResponse.text();
-
-            let loginData;
-
-            try {
-                loginData = loginText
-                    ? JSON.parse(loginText)
-                    : {};
-            } catch {
-                throw new Error(
-                    "Login API returned an invalid response."
-                );
-            }
-
-            if (!loginResponse.ok) {
-                throw new Error(
-                    loginData.detail ||
-                    loginData.error ||
-                    "Automatic login failed."
-                );
-            }
-
-            // Save JWT tokens
-            localStorage.setItem(
-                "access",
-                loginData.access
-            );
-
-            localStorage.setItem(
-                "refresh",
-                loginData.refresh
-            );
-
-            localStorage.setItem(
-                "username",
-                username.trim()
-            );
-
-            // Go directly to dashboard
-            navigate("/dashboard");
-
-        } catch (err) {
-            setError(
-                err.message ||
-                "Something went wrong."
-            );
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    return (
-        <>
-            <AuthNavbar />
-
-            <div className="auth-page">
-
-                <div className="register-layout">
-
-                    {/* LEFT SIDE - REGISTER FORM */}
-                    <div className="auth-card">
-
-                        <div className="auth-header">
-                            <h1>Create Account</h1>
-
-                            <p>
-                                Create your ResumeAI account
-                            </p>
-                        </div>
-
-                        {error && (
-                            <div className="auth-error">
-                                {error}
-                            </div>
-                        )}
-
-                        <form onSubmit={handleRegister}>
-
-                            <div className="form-group">
-                                <label>
-                                    Username
-                                </label>
-
-                                <input
-                                    type="text"
-                                    value={username}
-                                    onChange={(event) =>
-                                        setUsername(
-                                            event.target.value
-                                        )
-                                    }
-                                    placeholder="Enter username"
-                                    disabled={loading}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label>
-                                    Email
-                                </label>
-
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(event) =>
-                                        setEmail(
-                                            event.target.value
-                                        )
-                                    }
-                                    placeholder="Enter email"
-                                    disabled={loading}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label>
-                                    Password
-                                </label>
-
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(event) =>
-                                        setPassword(
-                                            event.target.value
-                                        )
-                                    }
-                                    placeholder="Create password"
-                                    disabled={loading}
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="auth-button"
-                                disabled={loading}
-                            >
-                                {loading
-                                    ? "Creating Account..."
-                                    : "Create Account"}
-                            </button>
-
-                        </form>
-
-                        <div className="auth-footer">
-                            <span>
-                                Already have an account?
-                            </span>
-
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    navigate("/login")
-                                }
-                            >
-                                Login
-                            </button>
-                        </div>
-
-                    </div>
-
-                    {/* RIGHT SIDE - PASSWORD CONDITIONS */}
-                    <div className="password-conditions">
-
-                        <h2>Password Requirements</h2>
-
-                        <p>
-                            Your password should contain:
-                        </p>
-
-                        <ul>
-                            <li>At least 8 characters</li>
-                            <li>At least 1 uppercase letter</li>
-                            <li>At least 1 lowercase letter</li>
-                            <li>At least 1 number</li>
-                            <li>At least 1 special character</li>
-                        </ul>
-
-                    </div>
-
-                </div>
-
-            </div>
-        </>
-    );
+    box-sizing: border-box;
 }
 
-export default Register;
+
+/* =========================================
+   LOGIN / REGISTER LAYOUT
+   ========================================= */
+
+.login-layout,
+.register-layout {
+    display: grid;
+
+    grid-template-columns: 430px 280px;
+
+    gap: 30px;
+
+    align-items: center;
+
+    width: fit-content;
+
+    max-width: 100%;
+
+    margin: auto;
+}
+
+
+/* =========================================
+   AUTH CARD
+   ========================================= */
+
+.auth-card {
+    width: 100%;
+
+    max-width: 430px;
+
+    background: #ffffff;
+
+    padding: 42px;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 18px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================
+   AUTH HEADER
+   ========================================= */
+
+.auth-header {
+    text-align: center;
+
+    margin-bottom: 30px;
+}
+
+.auth-header h1 {
+    margin: 0;
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+    color: #111827;
+}
+
+.auth-header p {
+    margin: 10px 0 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+/* =========================================
+   ERROR MESSAGE
+   ========================================= */
+
+.auth-error {
+    margin-bottom: 20px;
+
+    padding: 11px 13px;
+
+    background: #fef2f2;
+
+    border: 1px solid #fecaca;
+
+    border-radius: 8px;
+
+    color: #b91c1c;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================
+   FORM
+   ========================================= */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #374151;
+}
+
+.form-group input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: 0.2s ease;
+}
+
+.form-group input::placeholder {
+    color: #9ca3af;
+}
+
+.form-group input:focus {
+    border-color: #4f46e5;
+
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.form-group input:disabled {
+    background: #f3f4f6;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   AUTH BUTTON
+   ========================================= */
+
+.auth-button {
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #4f46e5;
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.auth-button:hover {
+    background: #4338ca;
+}
+
+.auth-button:disabled {
+    opacity: 0.7;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   AUTH FOOTER
+   ========================================= */
+
+.auth-footer {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-top: 24px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    color: #6b7280;
+}
+
+.auth-footer span {
+    color: #6b7280;
+}
+
+.auth-footer button {
+    border: none;
+
+    background: transparent;
+
+    color: #4f46e5;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    padding: 0;
+}
+
+.auth-footer button:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================
+   DEMO ACCOUNT
+   ========================================= */
+
+.demo-credentials {
+    width: 280px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    padding: 25px;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 18px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+}
+
+.demo-credentials h2 {
+    margin: 0 0 10px;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    color: #111827;
+}
+
+.demo-credentials p {
+    margin: 0 0 20px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+.demo-item {
+    margin-bottom: 12px;
+
+    padding: 10px 12px;
+
+    background: #f8fafc;
+
+    border-radius: 8px;
+
+    color: #374151;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+.demo-item strong {
+    color: #111827;
+}
+
+
+/* =========================================
+   PASSWORD REQUIREMENTS
+   ========================================= */
+
+.password-conditions {
+    width: 280px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    padding: 25px;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 18px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+}
+
+.password-conditions h2 {
+    margin: 0 0 10px;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    color: #111827;
+}
+
+.password-conditions p {
+    margin: 0 0 15px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+.password-conditions ul {
+    margin: 0;
+
+    padding-left: 20px;
+
+    color: #374151;
+
+    font-size: 14px;
+
+    line-height: 2;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    .login-layout,
+    .register-layout {
+        grid-template-columns: 1fr;
+
+        width: 100%;
+
+        max-width: 430px;
+    }
+
+    .auth-card {
+        max-width: 430px;
+    }
+
+    .demo-credentials,
+    .password-conditions {
+        width: 100%;
+    }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+   ========================================= */
+
+@media (max-width: 500px) {
+
+    .auth-page {
+        padding: 20px 15px;
+    }
+
+    .auth-card {
+        padding: 30px 22px;
+
+        border-radius: 14px;
+    }
+
+    .auth-header h1 {
+        font-size: 25px;
+    }
+
+    .demo-credentials,
+    .password-conditions {
+        padding: 22px;
+
+        border-radius: 14px;
+    }
+}
